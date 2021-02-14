@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 
+use App\Classes\Filtering;
+use App\Classes\Query;
+use App\Classes\SearchURLBuilder;
+use App\Classes\Sorting;
 use App\Services\GitHubService;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
@@ -30,11 +34,23 @@ class GitHubController extends Controller
     public function searchValidation(Request $request){
         return $this->validate($request, [
             'created' => 'required|date|before:today',
+            'language' => 'in:rails,javascript,css,html,shell,dockerfile,python,typescript,php',
+//            'sort' => 'required',
+//            'order' => 'required',
             'per_page' => 'in:10,50,100',
-            'language' => 'in:rails,javascript,css,html,shell,dockerfile,python,typescript,php'
         ]);
     }
+    public function uriBuilder($request){
+        $query = new Query($request['created'], $request['language']);
+        $sort = new Sorting($request['sort'], $request['order']);
+        $filter = new Filtering($request['per_page'],$request['page']);
 
+        $search = new SearchURLBuilder($query, $sort, $filter);
+
+        dd($search->toURL());
+    }
+
+/*
     public function uriBuilder($request){
         $uri = "?q=";
 
@@ -74,6 +90,6 @@ class GitHubController extends Controller
 
         return $uri;
     }
-
+*/
     //
 }
