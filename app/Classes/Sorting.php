@@ -16,7 +16,8 @@ class Sorting{
 
     public function toString(){
         $sorting = ''.$this->stringSortBy();
-        $sorting.= "&".$this->stringOrder();
+        if ($this->order)
+            $sorting.= "&".$this->stringOrder();
 
         return $sorting;
     }

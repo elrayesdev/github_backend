@@ -26,7 +26,7 @@ class GitHubController extends Controller
 
     public function index(Request $request){
         $validated = $this->searchValidation($request);
-        $uri = $this->uriBuilder($request->all());
+        $uri = $this->uriBuilder($request);
         $search = $this->githubService->searchRepositories($uri);
         return $this->successResponse($search);
     }
@@ -41,13 +41,12 @@ class GitHubController extends Controller
         ]);
     }
     public function uriBuilder($request){
-        $query = new Query($request['created'], $request['language']);
-        $sort = new Sorting($request['sort'], $request['order']);
-        $filter = new Filtering($request['per_page'],$request['page']);
+        $query = new Query($request->created, $request->language);
+        $sort = new Sorting($request->sort, $request->order);
+        $filter = new Filtering($request->per_page,$request->page);
 
         $search = new SearchURLBuilder($query, $sort, $filter);
-
-        dd($search->toURL());
+        return $search->toURL();
     }
 
 /*
